@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Form Nutrition — Peak Human Performance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#0e0f11',
+            surface: '#15171a',
+            panel: '#1c1f24',
+            border: '#2a2d34',
+            acid: '#c8ff00',
+            acidDim: '#9abf00',
+            muted: '#6b7280',
+            light: '#f0f0ee',
+          },
+          fontFamily: {
+            display: ['"Bebas Neue"', 'cursive'],
+            body: ['"DM Sans"', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background-color: #0e0f11; color: #f0f0ee; font-family: 'DM Sans', sans-serif; }
+
+    /* ── Noise grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: .45;
+    }
+
+    /* ── Hero gradient mesh ── */
+    .hero-mesh {
+      background:
+        radial-gradient(ellipse 60% 55% at 72% 40%, rgba(200,255,0,.13) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,255,0,.06) 0%, transparent 60%),
+        #0e0f11;
+    }
+
+    /* ── Diagonal slash divider ── */
+    .slash-divider {
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    /* ── Navbar blur ── */
+    .navbar-blur { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+
+    /* ── Product card hover ── */
+    .product-card { transition: transform .35s cubic-bezier(.22,.68,0,1.2), box-shadow .35s ease; }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px -8px rgba(200,255,0,.18); }
+
+    /* ── Acid underline animate ── */
+    .acid-link { position: relative; }
+    .acid-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: #c8ff00;
+      transition: width .3s ease;
+    }
+    .acid-link:hover::after { width: 100%; }
+
+    /* ── Ticker tape ── */
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-inner { animation: ticker 22s linear infinite; white-space: nowrap; }
+
+    /* ── Fade-up entrance ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { opacity: 0; animation: fadeUp .75s ease forwards; }
+    .delay-1 { animation-delay: .15s; }
+    .delay-2 { animation-delay: .30s; }
+    .delay-3 { animation-delay: .45s; }
+    .delay-4 { animation-delay: .60s; }
+
+    /* ── Star fill ── */
+    .star-filled { color: #c8ff00; }
+    .star-empty  { color: #2a2d34; }
+
+    /* ── Shimmer on product image placeholder ── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, #1c1f24 25%, #252930 50%, #1c1f24 75%);
+      background-size: 800px 100%;
+      animation: shimmer 2.2s infinite linear;
+    }
+
+    /* ── CTA button glow pulse ── */
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200,255,0,.45); }
+      50%       { box-shadow: 0 0 28px 8px rgba(200,255,0,.18); }
+    }
+    .btn-primary { animation: glowPulse 3s ease-in-out infinite; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #0e0f11; }
+    ::-webkit-scrollbar-thumb { background: #2a2d34; border-radius: 4px; }
+  </style>
+</head>
+
+<body class="relative overflow-x-hidden">
+
+<!-- ════════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<header class="navbar-blur fixed top-0 left-0 right-0 z-50 border-b border-border/60 bg-charcoal/70">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2.5 group">
+      <div class="w-7 h-7 rounded-sm bg-acid flex items-center justify-center">
+        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 text-charcoal" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      </div>
+      <span class="font-display text-xl tracking-widest text-light group-hover:text-acid transition-colors duration-300">APEX FORM</span>
+    </a>
+
+    <!-- Nav Links -->
+    <ul class="hidden md:flex items-center gap-8 text-sm font-body font-medium text-muted">
+      <li><a href="#products" class="acid-link hover:text-light transition-colors duration-200">Products</a></li>
+      <li><a href="#science"  class="acid-link hover:text-light transition-colors duration-200">The Science</a></li>
+      <li><a href="#about"    class="acid-link hover:text-light transition-colors duration-200">About</a></li>
+      <li><a href="#" class="acid-link hover:text-light transition-colors duration-200">Athletes</a></li>
+    </ul>
+
+    <!-- Right cluster -->
+    <div class="flex items-center gap-4">
+      <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-acid bg-acid/10 border border-acid/25 px-3 py-1 rounded-full">
+        <span class="w-1.5 h-1.5 rounded-full bg-acid inline-block animate-pulse"></span>
+        IN DEVELOPMENT
+      </span>
+      <button class="relative p-2 text-muted hover:text-light transition-colors">
+        <!-- Cart icon -->
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-acid text-charcoal text-[10px] font-bold font-mono flex items-center justify-center">3</span>
+      </button>
+    </div>
+
+  </nav>
+</header>
+
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero-mesh slash-divider relative min-h-screen flex flex-col justify-center pt-20 pb-32 overflow-hidden">
+
+  <!-- Background decorative elements -->
+  <div class="absolute top-1/4 right-10 w-72 h-72 rounded-full border border-acid/8 pointer-events-none"></div>
+  <div class="absolute top-1/3 right-20 w-48 h-48 rounded-full border border-acid/5 pointer-events-none"></div>
+  <div class="absolute bottom-20 left-6 w-px h-40 bg-gradient-to-b from-acid/40 to-transparent pointer-events-none"></div>
+  <div class="absolute top-32 left-1/2 w-px h-24 bg-gradient-to-b from-transparent via-acid/20 to-transparent pointer-events-none"></div>
+
+  <!-- Horizontal rule accent -->
+  <div class="absolute top-28 left-0 w-1/3 h-px bg-gradient-to-r from-acid/50 to-transparent pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+
+    <!-- Left: Copy -->
+    <div>
+      <p class="fade-up font-mono text-xs tracking-[0.25em] text-acid uppercase mb-6">
+        ◈ Sports Nutrition · Est. 2025
+      </p>
+
+      <h1 class="fade-up delay-1 font-display leading-none tracking-wide text-light">
+        <span class="block text-7xl md:text-[6.5rem] lg:text-[8rem]">PEAK</span>
+        <span class="block text-7xl md:text-[6.5rem] lg:text-[8rem] text-acid -mt-3">HUMAN</span>
+        <span class="block text-7xl md:text-[6.5rem] lg:text-[8rem] -mt-3">PERFORMANCE</span>
+      </h1>
+
+      <p class="fade-up delay-2 mt-7 max-w-md text-base font-body font-light text-muted leading-relaxed">
+        Engineered for elite athletes and high performers. Every formula is third-party lab tested, transparently dosed, and built to push your limits further.
+      </p>
+
+      <div class="fade-up delay-3 mt-10 flex flex-wrap gap-4 items-center">
+        <a href="#products"
+           class="btn-primary inline-flex items-center gap-2.5 bg-acid text-charcoal font-body font-semibold text-sm px-7 py-3.5 rounded-sm hover:bg-acidDim transition-colors duration-200 tracking-wide uppercase">
+          Shop Supplements
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="#science" class="inline-flex items-center gap-2 text-sm font-body text-muted hover:text-light transition-colors duration-200 group">
+          <span class="w-6 h-px bg-muted group-hover:bg-light group-hover:w-8 transition-all duration-300"></span>
+          The Science
+        </a>
+      </div>
+
+      <!-- Social proof strip -->
+      <div class="fade-up delay-4 mt-12 flex items-center gap-6 border-t border-border pt-8">
+        <div>
+          <p class="font-display text-3xl text-light tracking-wide">47K+</p>
+          <p class="text-xs text-muted font-body mt-0.5">Athletes Fuelled</p>
+        </div>
+        <div class="w-px h-10 bg-border"></div>
+        <div>
+          <p class="font-display text-3xl text-light tracking-wide">4.9★</p>
+          <p class="text-xs text-muted font-body mt-0.5">Avg. Rating</p>
+        </div>
+        <div class="w-px h-10 bg-border"></div>
+        <div>
+          <p class="font-display text-3xl text-light tracking-wide">Zero</p>
+          <p class="text-xs text-muted font-body mt-0.5">Banned Substances</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Hero product visual -->
+    <div class="relative hidden md:flex items-center justify-center">
+      <!-- Glow behind tub -->
+      <div class="absolute w-72 h-72 rounded-full bg-acid/12 blur-3xl"></div>
+
+      <!-- Tub placeholder -->
+      <div class="relative w-72 h-96 shimmer rounded-2xl border border-border/80 flex flex-col items-center justify-end pb-8 overflow-hidden shadow-2xl">
+        <!-- Tub label overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-charcoal/10 to-charcoal/80"></div>
+        <div class="relative text-center">
+          <p class="font-mono text-[10px] tracking-widest text-acid/80 uppercase mb-1">Whey Isolate Pro</p>
+          <p class="font-display text-4xl text-light tracking-widest">APEX</p>
+          <p class="font-display text-4xl text-acid -mt-2 tracking-widest">FORM</p>
+          <p class="font-mono text-xs text-muted mt-2">5LB · 75 Servings</p>
+        </div>
+        <!-- Diagonal stripe decoration -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-acid"></div>
+      </div>
+
+      <!-- Floating badges -->
+      <div class="absolute top-8 -left-6 bg-panel border border-border rounded-lg px-4 py-3 shadow-xl">
+        <p class="font-mono text-[10px] text-muted uppercase tracking-widest">Protein</p>
+        <p class="font-display text-2xl text-light mt-0.5">28g <span class="text-acid">✓</span></p>
+      </div>
+      <div class="absolute bottom-12 -right-6 bg-panel border border-border rounded-lg px-4 py-3 shadow-xl">
+        <p class="font-mono text-[10px] text-muted uppercase tracking-widest">Calories</p>
+        <p class="font-display text-2xl text-light mt-0.5">130 <span class="text-acid">✓</span></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     TICKER TAPE
+════════════════════════════════ -->
+<div class="bg-acid py-3 overflow-hidden select-none">
+  <div class="ticker-inner inline-flex gap-0">
+    <!-- Two identical runs so the loop is seamless -->
+    <span class="inline-flex gap-16 pr-16 font-mono text-xs font-bold tracking-widest text-charcoal uppercase">
+      <span>✦ Peak Performance</span>
+      <span>✦ Zero Fillers</span>
+      <span>✦ Lab Tested</span>
+      <span>✦ Third-Party Certified</span>
+      <span>✦ Transparent Dosing</span>
+      <span>✦ Worldwide Shipping</span>
+      <span>✦ Elite Athletes Approved</span>
+      <span>✦ 100% Authentic</span>
+    </span>
+    <span class="inline-flex gap-16 pr-16 font-mono text-xs font-bold tracking-widest text-charcoal uppercase" aria-hidden="true">
+      <span>✦ Peak Performance</span>
+      <span>✦ Zero Fillers</span>
+      <span>✦ Lab Tested</span>
+      <span>✦ Third-Party Certified</span>
+      <span>✦ Transparent Dosing</span>
+      <span>✦ Worldwide Shipping</span>
+      <span>✦ Elite Athletes Approved</span>
+      <span>✦ 100% Authentic</span>
+    </span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     FEATURED PRODUCTS
+════════════════════════════════ -->
+<section id="products" class="relative py-28 bg-surface">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section header -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
+      <div>
+        <p class="font-mono text-xs text-acid tracking-[0.22em] uppercase mb-3">◈ Our Formulas</p>
+        <h2 class="font-display text-5xl md:text-6xl text-light tracking-wide leading-none">FEATURED<br/>PRODUCTS</h2>
+      </div>
+      <a href="#" class="self-start md:self-auto inline-flex items-center gap-2 text-sm font-body text-muted hover:text-light transition-colors duration-200 group border-b border-border pb-1 hover:border-acid">
+        View All
+        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+
+    <!-- Products grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- ── Product Card macro ── -->
+
+      <!-- Card 1: Whey Isolate -->
+      <div class="product-card bg-panel border border-border rounded-xl overflow-hidden group cursor-pointer">
+        <!-- Image placeholder -->
+        <div class="relative h-56 shimmer flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-panel/60"></div>
+          <div class="relative text-center">
+            <div class="w-20 h-28 mx-auto border border-acid/30 rounded-lg flex flex-col items-center justify-center bg-charcoal/60">
+              <p class="font-display text-acid text-lg leading-none">APX</p>
+              <p class="font-mono text-[9px] text-muted mt-1">WHEY</p>
+            </div>
+          </div>
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-acid/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <!-- Badge -->
+          <span class="absolute top-3 left-3 bg-acid text-charcoal text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-widest uppercase">Best Seller</span>
+        </div>
+
+        <!-- Info -->
+        <div class="p-5">
+          <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">Protein · 5 lbs</p>
+          <h3 class="font-body font-semibold text-light text-base mb-2 leading-snug">Apex Whey Isolate Pro</h3>
+
+          <!-- Stars -->
+          <div class="flex gap-0.5 mb-3">
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span>
+            <span class="font-mono text-xs text-muted ml-1.5">(412)</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-muted line-through font-mono">$89.99</p>
+              <p class="font-display text-2xl text-acid tracking-wide">$74.99</p>
+            </div>
+            <button class="flex items-center gap-1.5 bg-acid text-charcoal text-xs font-body font-semibold px-4 py-2 rounded-sm hover:bg-acidDim transition-colors uppercase tracking-wide">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Pre-Workout -->
+      <div class="product-card bg-panel border border-border rounded-xl overflow-hidden group cursor-pointer">
+        <div class="relative h-56 shimmer flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-panel/60"></div>
+          <div class="relative text-center">
+            <div class="w-20 h-28 mx-auto border border-acid/30 rounded-lg flex flex-col items-center justify-center bg-charcoal/60">
+              <p class="font-display text-acid text-lg leading-none">APX</p>
+              <p class="font-mono text-[9px] text-muted mt-1">PRE-WO</p>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-acid/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <span class="absolute top-3 left-3 bg-charcoal text-acid text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-widest uppercase border border-acid/40">New Drop</span>
+        </div>
+        <div class="p-5">
+          <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">Pre-Workout · 300g</p>
+          <h3 class="font-body font-semibold text-light text-base mb-2 leading-snug">Surge Pre-Workout X</h3>
+          <div class="flex gap-0.5 mb-3">
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-empty text-sm">★</span>
+            <span class="font-mono text-xs text-muted ml-1.5">(287)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-muted line-through font-mono">$59.99</p>
+              <p class="font-display text-2xl text-acid tracking-wide">$49.99</p>
+            </div>
+            <button class="flex items-center gap-1.5 bg-acid text-charcoal text-xs font-body font-semibold px-4 py-2 rounded-sm hover:bg-acidDim transition-colors uppercase tracking-wide">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Creatine -->
+      <div class="product-card bg-panel border border-border rounded-xl overflow-hidden group cursor-pointer">
+        <div class="relative h-56 shimmer flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-panel/60"></div>
+          <div class="relative text-center">
+            <div class="w-20 h-28 mx-auto border border-acid/30 rounded-lg flex flex-col items-center justify-center bg-charcoal/60">
+              <p class="font-display text-acid text-lg leading-none">APX</p>
+              <p class="font-mono text-[9px] text-muted mt-1">CRTN</p>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-acid/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+        <div class="p-5">
+          <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">Creatine · 500g</p>
+          <h3 class="font-body font-semibold text-light text-base mb-2 leading-snug">Apex Creatine Monohydrate</h3>
+          <div class="flex gap-0.5 mb-3">
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span>
+            <span class="font-mono text-xs text-muted ml-1.5">(539)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-transparent font-mono">—</p>
+              <p class="font-display text-2xl text-acid tracking-wide">$29.99</p>
+            </div>
+            <button class="flex items-center gap-1.5 bg-acid text-charcoal text-xs font-body font-semibold px-4 py-2 rounded-sm hover:bg-acidDim transition-colors uppercase tracking-wide">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Mass Gainer -->
+      <div class="product-card bg-panel border border-border rounded-xl overflow-hidden group cursor-pointer">
+        <div class="relative h-56 shimmer flex items-center justify-center overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-panel/60"></div>
+          <div class="relative text-center">
+            <div class="w-20 h-28 mx-auto border border-acid/30 rounded-lg flex flex-col items-center justify-center bg-charcoal/60">
+              <p class="font-display text-acid text-lg leading-none">APX</p>
+              <p class="font-mono text-[9px] text-muted mt-1">MASS</p>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-acid/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <span class="absolute top-3 left-3 bg-charcoal text-light text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm tracking-widest uppercase border border-border">Limited</span>
+        </div>
+        <div class="p-5">
+          <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">Mass Gainer · 10 lbs</p>
+          <h3 class="font-body font-semibold text-light text-base mb-2 leading-snug">HyperMass Extreme Formula</h3>
+          <div class="flex gap-0.5 mb-3">
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-filled text-sm">★</span><span class="star-filled text-sm">★</span>
+            <span class="star-empty text-sm">★</span>
+            <span class="font-mono text-xs text-muted ml-1.5">(198)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs text-muted line-through font-mono">$119.99</p>
+              <p class="font-display text-2xl text-acid tracking-wide">$99.99</p>
+            </div>
+            <button class="flex items-center gap-1.5 bg-acid text-charcoal text-xs font-body font-semibold px-4 py-2 rounded-sm hover:bg-acidDim transition-colors uppercase tracking-wide">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     SCIENCE / ABOUT STRIP
+════════════════════════════════ -->
+<section id="science" class="py-24 bg-charcoal border-y border-border overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+
+    <!-- Left: big number + copy -->
+    <div>
+      <p class="font-mono text-xs text-acid tracking-[0.22em] uppercase mb-6">◈ The Standard</p>
+      <h2 class="font-display text-5xl md:text-6xl text-light leading-none tracking-wide mb-8">THE SCIENCE<br/>BEHIND THE<br/><span class="text-acid">FORMULA</span></h2>
+      <p class="text-muted font-body font-light leading-relaxed mb-6 max-w-md">
+        We partner with accredited third-party labs to verify every batch. No proprietary blends hiding underdosed ingredients — every gram is shown on the label.
+      </p>
+      <ul class="space-y-3">
+        <li class="flex items-start gap-3 text-sm font-body text-muted">
+          <svg class="w-4 h-4 text-acid mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Informed Sport & NSF Certified</li>
+        <li class="flex items-start gap-3 text-sm font-body text-muted">
+          <svg class="w-4 h-4 text-acid mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          cGMP Manufacturing Facilities</li>
+        <li class="flex items-start gap-3 text-sm font-body text-muted">
+          <svg class="w-4 h-4 text-acid mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Clinical Doses — No Pixie Dusting</li>
+        <li class="flex items-start gap-3 text-sm font-body text-muted">
+          <svg class="w-4 h-4 text-acid mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Zero Artificial Dyes or Fillers</li>
+      </ul>
+    </div>
+
+    <!-- Right: stat cards -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-panel border border-border rounded-xl p-6">
+        <p class="font-display text-5xl text-acid tracking-wide">28g</p>
+        <p class="font-body text-sm text-muted mt-1">Pure Protein Per Scoop</p>
+      </div>
+      <div class="bg-panel border border-border rounded-xl p-6">
+        <p class="font-display text-5xl text-acid tracking-wide">3K+</p>
+        <p class="font-body text-sm text-muted mt-1">5-Star Reviews</p>
+      </div>
+      <div class="bg-panel border border-border rounded-xl p-6 col-span-2">
+        <p class="font-display text-5xl text-acid tracking-wide">100%</p>
+        <p class="font-body text-sm text-muted mt-1">Transparent Labelling — Every Ingredient, Every Dose</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     TRUST & AUTHORITY BANNER
+════════════════════════════════ -->
+<section class="py-16 bg-surface border-b border-border">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <p class="text-center font-mono text-xs text-acid tracking-[0.22em] uppercase mb-12">◈ Why Athletes Trust Apex Form</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Trust item 1 -->
+      <div class="flex flex-col items-center text-center p-8 bg-panel rounded-xl border border-border hover:border-acid/40 transition-colors duration-300 group">
+        <div class="w-12 h-12 rounded-full bg-acid/10 border border-acid/25 flex items-center justify-center mb-5 group-hover:bg-acid/20 transition-colors">
+          <svg class="w-5 h-5 text-acid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-light text-base mb-2">Worldwide Shipping</h3>
+        <p class="text-sm text-muted font-body font-light leading-relaxed">Fast, tracked delivery to 80+ countries. Orders dispatched within 24 hours.</p>
+      </div>
+
+      <!-- Trust item 2 -->
+      <div class="flex flex-col items-center text-center p-8 bg-panel rounded-xl border border-border hover:border-acid/40 transition-colors duration-300 group">
+        <div class="w-12 h-12 rounded-full bg-acid/10 border border-acid/25 flex items-center justify-center mb-5 group-hover:bg-acid/20 transition-colors">
+          <svg class="w-5 h-5 text-acid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-light text-base mb-2">100% Authentic Guaranteed</h3>
+        <p class="text-sm text-muted font-body font-light leading-relaxed">Every product ships directly from our certified facility. Anti-counterfeit QR on every tub.</p>
+      </div>
+
+      <!-- Trust item 3 -->
+      <div class="flex flex-col items-center text-center p-8 bg-panel rounded-xl border border-border hover:border-acid/40 transition-colors duration-300 group">
+        <div class="w-12 h-12 rounded-full bg-acid/10 border border-acid/25 flex items-center justify-center mb-5 group-hover:bg-acid/20 transition-colors">
+          <svg class="w-5 h-5 text-acid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-light text-base mb-2">Third-Party Lab Tested</h3>
+        <p class="text-sm text-muted font-body font-light leading-relaxed">Independent testing confirms purity, potency, and zero banned substances every batch.</p>
+      </div>
+
+      <!-- Trust item 4 -->
+      <div class="flex flex-col items-center text-center p-8 bg-panel rounded-xl border border-border hover:border-acid/40 transition-colors duration-300 group">
+        <div class="w-12 h-12 rounded-full bg-acid/10 border border-acid/25 flex items-center justify-center mb-5 group-hover:bg-acid/20 transition-colors">
+          <svg class="w-5 h-5 text-acid" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </div>
+        <h3 class="font-body font-semibold text-light text-base mb-2">30-Day Money Back</h3>
+        <p class="text-sm text-muted font-body font-light leading-relaxed">Not satisfied? Full refund within 30 days — no questions, no hassle.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     NEWSLETTER
+════════════════════════════════ -->
+<section class="py-20 bg-charcoal relative overflow-hidden">
+  <!-- Background accent -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-40 bg-acid/8 blur-3xl rounded-full"></div>
+  </div>
+
+  <div class="relative z-10 max-w-2xl mx-auto px-6 text-center">
+    <p class="font-mono text-xs text-acid tracking-[0.22em] uppercase mb-4">◈ Stay Ahead</p>
+    <h2 class="font-display text-4xl md:text-5xl text-light leading-none tracking-wide mb-5">GET EARLY ACCESS<br/>&amp; EXCLUSIVE DROPS</h2>
+    <p class="text-muted font-body font-light text-sm mb-10 max-w-sm mx-auto leading-relaxed">
+      Join 12,000+ athletes. Be first to know about new formulas, restocks, and member-only discounts.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <input
+        type="email"
+        placeholder="your@email.com"
+        class="flex-1 bg-panel border border-border rounded-sm px-5 py-3.5 text-sm font-body text-light placeholder-muted focus:outline-none focus:border-acid/60 transition-colors"
+      />
+      <button class="bg-acid text-charcoal font-body font-semibold text-sm px-7 py-3.5 rounded-sm hover:bg-acidDim transition-colors uppercase tracking-wide shrink-0">
+        Join Now
+      </button>
+    </div>
+    <p class="text-xs text-muted font-body mt-4">No spam. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer class="bg-surface border-t border-border pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Footer top: brand + nav columns -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+
+      <!-- Brand column -->
+      <div class="col-span-2">
+        <div class="flex items-center gap-2.5 mb-5">
+          <div class="w-7 h-7 rounded-sm bg-acid flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 text-charcoal" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+          </div>
+          <span class="font-display text-xl tracking-widest text-light">APEX FORM</span>
+        </div>
+        <p class="text-sm text-muted font-body font-light leading-relaxed max-w-xs">
+          Engineered nutrition for the relentlessly ambitious. Zero compromises. Peak performance — always.
+        </p>
+        <!-- Social icons -->
+        <div class="flex gap-4 mt-6">
+          <a href="#" class="w-8 h-8 border border-border rounded-sm flex items-center justify-center text-muted hover:text-acid hover:border-acid/50 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="w-8 h-8 border border-border rounded-sm flex items-center justify-center text-muted hover:text-acid hover:border-acid/50 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.21 8.21 0 004.86 1.56V6.8a4.85 4.85 0 01-1.09-.11z"/></svg>
+          </a>
+          <a href="#" class="w-8 h-8 border border-border rounded-sm flex items-center justify-center text-muted hover:text-acid hover:border-acid/50 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Links col 1 -->
+      <div>
+        <h4 class="font-mono text-[10px] tracking-widest text-acid uppercase mb-5">Products</h4>
+        <ul class="space-y-3 text-sm font-body text-muted">
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Protein Powders</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Pre-Workout</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Creatine</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Mass Gainers</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Recovery</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Bundles</a></li>
+        </ul>
+      </div>
+
+      <!-- Links col 2 -->
+      <div>
+        <h4 class="font-mono text-[10px] tracking-widest text-acid uppercase mb-5">Company</h4>
+        <ul class="space-y-3 text-sm font-body text-muted">
+          <li><a href="#" class="hover:text-light transition-colors acid-link">About Apex Form</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Our Athletes</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Lab Results</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Careers</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Press Kit</a></li>
+        </ul>
+      </div>
+
+      <!-- Links col 3 -->
+      <div>
+        <h4 class="font-mono text-[10px] tracking-widest text-acid uppercase mb-5">Support</h4>
+        <ul class="space-y-3 text-sm font-body text-muted">
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Track Order</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Shipping Info</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Returns Policy</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">FAQ</a></li>
+          <li><a href="#" class="hover:text-light transition-colors acid-link">Contact Us</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /footer grid -->
+
+    <!-- Footer bottom bar -->
+    <div class="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="font-mono text-[11px] text-muted">
+        &copy; 2025 Apex Form Nutrition Ltd. All rights reserved.
+      </p>
+      <div class="flex items-center gap-6 text-[11px] font-mono text-muted">
+        <a href="#" class="hover:text-light transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-light transition-colors">Terms of Use</a>
+        <a href="#" class="hover:text-light transition-colors">Cookie Settings</a>
+      </div>
+      <!-- Payment icons placeholder -->
+      <div class="flex gap-2">
+        <span class="border border-border rounded px-2 py-1 text-[9px] font-mono text-muted tracking-widest">VISA</span>
+        <span class="border border-border rounded px-2 py-1 text-[9px] font-mono text-muted tracking-widest">MC</span>
+        <span class="border border-border rounded px-2 py-1 text-[9px] font-mono text-muted tracking-widest">AMEX</span>
+        <span class="border border-border rounded px-2 py-1 text-[9px] font-mono text-muted tracking-widest">PAYPAL</span>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>
